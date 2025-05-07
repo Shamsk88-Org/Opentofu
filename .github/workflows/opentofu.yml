@@ -26,24 +26,23 @@ jobs:
       uses: hashicorp/setup-terraform@v3
     - name: Install OpenTofu
       run: |
-        curl -L -o opentofu.zip https://opentofu.org/downloads/opentofu.zip
-        unzip opentofu.zip -d /usr/local/bin/
-        chmod +x /usr/local/bin/opentofu
-
-
+        curl -L -o opentofu.tar.gz https://opentofu.org/downloads/opentofu.tar.gz
+        tar -xzf opentofu.tar.gz -C /usr/local/bin/
+        chmod +x /usr/local/bin/tofu
+    
     - name: Azure Login
       uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}    
 
     - name: OpenTofu Init
-      run: OpenTofu init
+      run: tofu init
       working-directory: /home/runner/work/Opentofu/Opentofu/terraform
 
     - name: OpenTofu Plan
-      run: OpenTofu plan
+      run: tofu plan
       working-directory: /home/runner/work/Opentofu/Opentofu/terraform
 
     - name: OpenTofu Apply
-      run: OpenTofu apply -auto-approve
+      run: tofu apply -auto-approve
       working-directory: /home/runner/work/Opentofu/Opentofu/terraform
