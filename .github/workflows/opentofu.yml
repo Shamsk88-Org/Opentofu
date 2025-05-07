@@ -22,13 +22,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+
     - name: Setup OpenTofu
-      uses: hashicorp/setup-terraform@v3
-    - name: Install OpenTofu
-      run: |
-        curl -L -o opentofu.tar https://opentofu.org/downloads/opentofu.tar
-        tar -xf opentofu.tar -C /usr/local/bin/
-        chmod +x /usr/local/bin/tofu
+      uses: opentofu/setup-opentofu@v1
+      
         
     - name: Azure Login
       uses: azure/login@v2
