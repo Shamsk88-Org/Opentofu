@@ -31,13 +31,13 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}    
 
     - name: OpenTofu Init
-      run: terraform init
+      run: OpenTofu init
       working-directory: /home/runner/work/Opentofu/Opentofu/terraform
 
     - name: OpenTofu Plan
-      run: terraform plan
+      run: OpenTofu plan
       working-directory: /home/runner/work/Opentofu/Opentofu/terraform
 
     - name: OpenTofu Apply
-      run: terraform apply -auto-approve
+      run: OpenTofu apply -auto-approve
       working-directory: /home/runner/work/Opentofu/Opentofu/terraform

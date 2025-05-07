@@ -13,3 +13,11 @@ description = "The name of the resourcegroup"
 variable "location" {
 description = "ResourceLocation"
 }
+
+variable "storage_account_name" {
+description = "ResourceLocation"
+}
+
+variable "container_name" {
+description = "ResourceLocation"
+}
