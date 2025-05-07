@@ -24,6 +24,12 @@ jobs:
 
     - name: Setup OpenTofu
       uses: hashicorp/setup-terraform@v3
+    - name: Install OpenTofu
+      run: |
+        curl -L -o opentofu.zip https://opentofu.org/downloads/opentofu.zip
+        unzip opentofu.zip -d /usr/local/bin/
+        chmod +x /usr/local/bin/opentofu
+
 
     - name: Azure Login
       uses: azure/login@v2
