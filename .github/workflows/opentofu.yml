@@ -1,0 +1,57 @@
+name: 'OpenTofu CI/CD'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  opentofu:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup OpenTofu
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Configure OpenTofu Backend
+      run: |
+        cat > backend.tf <<EOF
+        terraform {
+          backend "azurerm" {
+            resource_group_name   = "${{ secrets.AZURE_RESOURCE_GROUP }}"
+            storage_account_name  = "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}"
+            container_name        = "${{ secrets.AZURE_CONTAINER_NAME }}"
+            key                   = "opentofu.tfstate"
+          }
+        }
+        EOF
+
+    - name: Create Resource Group
+      run: |
+        cat > main.tf <<EOF
+        provider "azurerm" {
+          features {}
+        }
+
+        resource "azurerm_resource_group" "example" {
+          name     = "example-resources"
+          location = "East US"
+        }
+        EOF
+
+    - name: OpenTofu Init
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      run: terraform init
+
+    - name: OpenTofu Plan
+      run: terraform plan
+
+    - name: OpenTofu Apply
+      run: terraform apply -auto-approve
