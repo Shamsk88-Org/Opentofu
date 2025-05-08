@@ -31,7 +31,12 @@ jobs:
     - name: Azure Login
       uses: azure/login@v2
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}    
+        creds: ${{ secrets.AZURE_CREDENTIALS }} 
+
+
+    - name: Clear Terraform Cache
+      run: |
+        rm -rf .terraform .terraform.lock.hcl
 
     - name: OpenTofu Init
       run: tofu init
