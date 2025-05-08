@@ -26,9 +26,12 @@ jobs:
 
     - name: Install OpenTofu
       run: |
-        wget https://github.com/opentofu/opentofu/releases/download/v1.9.1/opentofu_1.9.1_linux_amd64.zip
-        unzip opentofu_1.9.1_linux_amd64.zip
-        sudo mv opentofu /usr/local/bin/
+          sudo apt update
+          sudo apt install curl unzip -y
+          curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+          chmod +x install-opentofu.sh
+          ./install-opentofu.sh --install-method standalone
+          tofu version
       working-directory: /home/runner/work/Opentofu/Opentofu/terraform
       
               
