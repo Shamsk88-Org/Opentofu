@@ -21,3 +21,7 @@ description = "ResourceLocation"
 variable "container_name" {
 description = "ResourceLocation"
 }
+
+variable "resource_group_name" {
+description = "The name of the resource group name"
+}
