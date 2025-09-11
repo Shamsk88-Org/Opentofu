@@ -17,6 +17,7 @@ jobs:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        TF_WORKDIR: terraform
 
     defaults:
        run:
@@ -25,9 +26,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
-
-
+      
     - name: Install OpenTofu
       run: |
           sudo apt update
@@ -36,7 +35,7 @@ jobs:
           chmod +x install-opentofu.sh
           ./install-opentofu.sh --install-method standalone
           tofu version
-      working-directory: /home/runner/work/Opentofu/Opentofu/terraform
+      working-directory: ${{ github.workspace }}/${{ env.TF_WORKDIR }}
       
               
     - name: Azure Login
@@ -48,12 +47,12 @@ jobs:
 
     - name: OpenTofu Init
       run: tofu init
-      working-directory: /home/runner/work/Opentofu/Opentofu/terraform
+      working-directory: ${{ github.workspace }}/${{ env.TF_WORKDIR }}
 
     - name: OpenTofu Plan
       run: tofu plan
-      working-directory: /home/runner/work/Opentofu/Opentofu/terraform
+      working-directory: ${{ github.workspace }}/${{ env.TF_WORKDIR }}
 
     - name: OpenTofu Apply
       run: tofu apply -auto-approve
-      working-directory: /home/runner/work/Opentofu/Opentofu/terraform
+      working-directory: ${{ github.workspace }}/${{ env.TF_WORKDIR }}
