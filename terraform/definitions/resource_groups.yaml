@@ -1,0 +1,9 @@
+---
+
+- name: rg-in-dev-environment-02 # Required Name of Resource Group
+  location: southindia # Required Resource group Location
+  tags: # Optional 
+    environment: production
+    department: finance
+    owner: shamsk
+    source: terraform

@@ -1,0 +1,8 @@
+---
+- name: rg-dev-infr-01
+  location: westeurope
+  tags:
+    environment: production
+    department: finance
+    owner: shamsk
+    source: terraform
