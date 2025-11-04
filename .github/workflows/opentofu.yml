@@ -18,18 +18,35 @@ jobs:
     outputs:
       plan-result: ${{ steps.plan.outputs.result }}
     env:
-      TF_WORKDIR: terraform
+        ARM_USE_OIDC: true 
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        TF_WORKDIR: terraform
+    defaults:
+       run:
+            shell: bash
+            
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup OpenTofu
+      - name: Install OpenTofu
         run: |
-          curl -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+          sudo apt update
+          sudo apt install curl unzip -y
+          curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
           chmod +x install-opentofu.sh
           ./install-opentofu.sh --install-method standalone
           tofu version
         working-directory: ${{ github.workspace }}/${{ env.TF_WORKDIR }}
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID}}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Tofu Init
         run: tofu init
@@ -53,13 +70,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup OpenTofu
+      - name: Install OpenTofu
         run: |
-          curl -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+          sudo apt update
+          sudo apt install curl unzip -y
+          curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
           chmod +x install-opentofu.sh
           ./install-opentofu.sh --install-method standalone
           tofu version
         working-directory: ${{ github.workspace }}/${{ env.TF_WORKDIR }}
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID}}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Tofu Apply
         run: tofu apply -auto-approve
