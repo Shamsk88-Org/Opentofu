@@ -7,3 +7,4 @@ resource "azurerm_resource_group" "rg" {
   location = try(each.value.location, "southeast")
   tags     = try(each.value.tags, null)
 }
+
