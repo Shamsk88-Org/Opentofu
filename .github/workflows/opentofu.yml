@@ -12,17 +12,19 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  ARM_USE_OIDC: true 
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  TF_WORKDIR: terraform
+
 jobs:
   plan:
     runs-on: ubuntu-latest
     outputs:
       plan-result: ${{ steps.plan.outputs.result }}
-    env:
-        ARM_USE_OIDC: true 
-        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        TF_WORKDIR: terraform
+
     defaults:
        run:
             shell: bash
@@ -64,12 +66,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: apply-approval  # ✅ Approval gate here
     if: ${{ github.event_name == 'workflow_dispatch' }}  # Optional: only allow manual apply
-    env:
-      ARM_USE_OIDC: true 
-      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      TF_WORKDIR: terraform
+    # env:
+    #   ARM_USE_OIDC: true 
+    #   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+    #   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+    #   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    #   TF_WORKDIR: terraform
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -90,7 +92,7 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID}}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          
+
       - name: Tofu Init
         run: tofu init
         working-directory: ${{ github.workspace }}/${{ env.TF_WORKDIR }}
